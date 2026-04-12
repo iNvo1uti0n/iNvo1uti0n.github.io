@@ -4,10 +4,17 @@
         <meta charset="UTF-8">
         <title>iNvo1uti0n's blog</title>
         <link rel="icon" type="image/x-icon" href="favicon.ico">
+        <style>
+            a:link{text-decoration:none;}
+            a:hover{text-decoration:underline;}
+        </style>
     </head>
     <body style="background-color:#151515;">
 
-        <a href="https://iNvo1uti0n.github.io" style="color:#99ff3300;"><h1 id="title" style="text-align:left;margin-left:0.9cm;color:#99FF33;font-family:'Courier New', monospace;">./ iNvo1uti0n</h1></a>
+        <div id="title" style="display:inline-flex;align-items:flex-end;text-align:left;margin-left:0.9cm;color:#99FF33;font-family:'Courier New', monospace;">
+            <h1 id="title-prefix" style="margin:0;padding-top:0.5em;padding-right:0.6em;">./</h1>
+            <a href="https://iNvo1uti0n.github.io" style="color:#99ff33;"><h1 id="title-main" style="margin:0;color:#99FF33;">iNvo1uti0n</h1></a>
+        </div>
         <p id="intro" style="text-align:left;margin-left:2.5cm;color:#999999;font-family:'Courier New', monospace;">Welcome to iNvo1uti0n's blog!</p>
         <br />
         <hr style="border:0.5px dashed #99FF33;">
@@ -15,7 +22,8 @@
         <p style="text-align:left;margin-left:2.5cm;color:#999999;font-family:'Courier New', monospace;">There's nothing here yet ...</p>
         <script>
             const charSet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,/\\|?!@#$%^&*[]{}<>\'\"~`+=-';
-            const title = document.getElementById('title');
+            const titlePrefix = document.getElementById('title-prefix');
+            const titleMain = document.getElementById('title-main');
             const intro = document.getElementById('intro');
 
             function randomChar(){return charSet[Math.floor(Math.random() * charSet.length)];}
@@ -46,10 +54,11 @@
             }
             
             window.addEventListener('load',() => {
-                title.textContent = createGarbled('./ iNvo1uti0n');
+                titlePrefix.textContent = './';
+                titleMain.textContent = createGarbled('iNvo1uti0n');
                 intro.textContent = createGarbled("Welcome to iNvo1uti0n's blog!");
                 setTimeout(() => {
-                    animateText(title, './ iNvo1uti0n');
+                    animateText(titleMain, 'iNvo1uti0n');
                     animateText(intro, "Welcome to iNvo1uti0n's blog!");
                 },120);
             });
