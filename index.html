@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="UTF-8">
+        <title>iNvo1uti0n's blog</title>
+        <link rel="icon" type="image/x-icon" href="favicon.ico">
+    </head>
+    <body style="background-color:#151515;">
+
+        <a href="https://iNvo1uti0n.github.io" style="color:#99ff3300;"><h1 id="title" style="text-align:left;margin-left:0.9cm;color:#99FF33;font-family:'Courier New', monospace;">./ iNvo1uti0n</h1></a>
+        <p id="intro" style="text-align:left;margin-left:2.5cm;color:#999999;font-family:'Courier New', monospace;">Welcome to iNvo1uti0n's blog!</p>
+        <br />
+        <hr style="border:0.5px dashed #99FF33;">
+        <br />
+        <p style="text-align:left;margin-left:2.5cm;color:#999999;font-family:'Courier New', monospace;">There's nothing here yet ...</p>
+        <script>
+            const charSet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,/\\|?!@#$%^&*[]{}<>\'\"~`+=-';
+            const title = document.getElementById('title');
+            const intro = document.getElementById('intro');
+
+            function randomChar(){return charSet[Math.floor(Math.random() * charSet.length)];}
+            function createGarbled(text){return Array.from(text, ch => ch === ' ' ? ' ' : randomChar()).join('');}
+            function animateText(element, text){
+                const target = String(text);
+                let display = createGarbled(target).split('');
+                let index = 0;
+                element.textContent = display.join('');
+
+                const timer = setInterval(() => {
+                    if(index >= target.length){
+                        clearInterval(timer);
+                        element.textContent = target;
+                        return;
+                    }
+                    if(target[index] === ' '){
+                        display[index] = ' ';
+                        index += 1;
+                        return;
+                    }
+                    display[index] = target[index];
+                    for(let i = index + 1;i < target.length;i += 1)
+                        if(target[i] !== ' ') display[i] = randomChar();
+                    element.textContent = display.join('');
+                    index += 1;
+                },50);
+            }
+            
+            window.addEventListener('load',() => {
+                title.textContent = createGarbled('./ iNvo1uti0n');
+                intro.textContent = createGarbled("Welcome to iNvo1uti0n's blog!");
+                setTimeout(() => {
+                    animateText(title, './ iNvo1uti0n');
+                    animateText(intro, "Welcome to iNvo1uti0n's blog!");
+                },120);
+            });
+        </script>
+
+    </body>
+</html>
