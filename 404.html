@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset="UTF-8">
+        <title>404 Not Found</title>
+        <link rel="icon" type="image/png" href="/favicon.png">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        <style>
+            .no-select{user-select:none;}
+            .no-underline{text-decoration:none;color:#CCCCCC;}
+            .no-underline:hover{text-decoration:none;animation: change-color 0.3s ease-in-out;}
+            @keyframes change-color{
+                from{color:#CCCCCC;}
+                to{color:#99FF33;}
+            }
+            .normal-text{
+                text-align:left;
+                margin-left:2.5cm;
+                color:#CCCCCC;
+                font-family:'Courier New', monospace;
+            }
+            .loading-icon{
+                margin-right:0.4rem;
+                color:#CCCCCC;
+                vertical-align:text-bottom;
+            }
+            a:link h1{text-decoration:none;}
+            a:hover h1{text-decoration:underline;}
+            a.no-underline{
+                color:#CCCCCC;
+                text-decoration:none;
+            }
+            a.no-underline:hover{
+                color:#99FF33;
+                text-decoration:underline;
+                animation: change-color 0.3s ease-in-out;
+            }
+            h1{
+                display:inline-block;
+                font-family:'Courier New', monospace;
+                color:#99FF33;
+            }
+            hr{
+                border:none;
+                height:2px;
+                margin-left:2.5cm;
+                margin-right:2.5cm;
+                background-image:linear-gradient(to right,#99FF33 60%,rgba(0,0,0,0) 0%);
+                background-size:14.5px 1.5px;
+                background-repeat:repeat-x;
+            }
+            p{font-family:'Courier New', monospace;}
+        </style>
+    </head>
+    <body style="background-color:#151515;">
+
+        <div id="title" style="display:inline-flex;align-items:flex-end;text-align:left;margin-top:0.6cm;margin-left:0.9cm;">
+            <h1 class="no-select" id="title-prefix" style="margin:0;">./</h1>
+            <h1 class="no-select" style="padding-right:0.58cm;"></h1>
+            <h1 id="title-main" style="margin:0"></h1>
+        </div>
+        <br class="no-select" /><br class="no-select" />
+        <p class="normal-text">
+            <span id="text1"></span>
+            <span id="countdown"></span>
+            <span id="text2"></span>
+        </p>
+        <p class="normal-text">
+            <span id="text3"></span>
+            <a class="no-underline" id="stop-countdown" href="#" onclick="stopRedirect(); return false;" style="text-decoration:none;"></a>
+        </p>
+        <p class="normal-text"><span id="text4"></span></p>
+        <p class="normal-text">
+            <span id="text5"></span>
+            <a class="no-underline" id="go-home" href="/" style="text-decoration:none;"></a>
+        </p>
+        <p class="normal-text">
+            <span id="text6"></span>
+            <a class="no-underline" id="go-last-page" href="javascript:history.back()" style="text-decoration:none;"></a>
+        </p>
+        <script>
+            const path = window.location.pathname;
+            const charSet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,/\\|?!@#$%^&*[]{}<>\'\"~`+=-';
+            const titlePrefix = document.getElementById('title-prefix');
+            const titleMain = document.getElementById('title-main');
+            const text1 = document.getElementById('text1');
+            const countdown = document.getElementById('countdown');
+            const text2 = document.getElementById('text2');
+            const text3 = document.getElementById('text3');
+            const stopCountdown = document.getElementById('stop-countdown');
+            const text4 = document.getElementById('text4');
+            const text5 = document.getElementById('text5');
+            const goHome = document.getElementById('go-home');
+            const text6 = document.getElementById('text6');
+            const goLastPage = document.getElementById('go-last-page');
+
+            const redirectDelay = 5;
+            let remainingSeconds = redirectDelay;
+            const homeUrl = path.startsWith('/zh/') ? '/zh/' : path.startsWith('/en/') ? '/en/' : '/';
+
+            function updateCountdownText(){
+                countdown.textContent = remainingSeconds;
+                if(path.startsWith('/en/')){
+                    text1.textContent = 'You will be redirected to the homepage in ';
+                    text2.textContent = ' seconds ...';
+                    text3.textContent = 'If you don\'t want to redirect, click ';
+                    stopCountdown.textContent = 'here';
+                }else{
+                    text1.textContent = '将会在 ';
+                    text2.textContent = ' 秒后跳转到主页 ...';
+                    text3.textContent = '如果不想跳转，点击';
+                    stopCountdown.textContent = '这里';
+                }
+            }
+
+            updateCountdownText();
+            const countdownTimer = setInterval(() => {
+                remainingSeconds -= 1;
+                if(remainingSeconds <= 0){
+                    clearInterval(countdownTimer);
+                    window.location.href = homeUrl;
+                    return;
+                }
+                updateCountdownText();
+            }, 1000);
+
+            function stopRedirect(){
+                clearInterval(countdownTimer);
+                text1.style.display = 'none';
+                countdown.style.display = 'none';
+                text2.style.display = 'none';
+                text3.style.display = 'none';
+                stopCountdown.style.display = 'none';
+                text4.style.display = 'block';
+                text5.style.display = 'inline';
+                goHome.style.display = 'inline';
+                text6.style.display = 'inline';
+                goLastPage.style.display = 'inline';
+                if(path.startsWith('/en/')){
+                    text4.textContent = 'Redirection cancelled';
+                    text5.textContent = 'Go back to ';
+                    goHome.link = '/en/';
+                    goHome.textContent = 'homepage';
+                    text6.textContent = 'or';
+                    goLastPage.textContent = 'last page';
+                }else{
+                    text4.textContent = '已取消跳转';
+                    text5.textContent = '返回';
+                    goHome.link = path.startsWith('/zh/') ? '/zh/' : '/';
+                    goHome.textContent = '主页';
+                    text6.textContent = '或';
+                    goLastPage.textContent = '上一页';
+                }
+            }
+
+            function randomChar(){return charSet[Math.floor(Math.random() * charSet.length)];}
+            function createGarbled(text){return Array.from(text, ch => ch === ' ' ? ' ' : randomChar()).join('');}
+            function animateText(element, text){
+                const target = String(text);
+                let display = createGarbled(target).split('');
+                let index = 0;
+                element.textContent = display.join('');
+
+                const timer = setInterval(() => {
+                    if(index >= target.length){
+                        clearInterval(timer);
+                        element.textContent = target;
+                        return;
+                    }
+                    if(target[index] === ' '){
+                        display[index] = ' ';
+                        index += 1;
+                        return;
+                    }
+                    display[index] = target[index];
+                    for(let i = index + 1;i < target.length;i += 1)
+                        if(target[i] !== ' ') display[i] = randomChar();
+                    element.textContent = display.join('');
+                    index += 1;
+                },50);
+            }
+            
+            window.addEventListener('load',() => {
+                titlePrefix.textContent = './';
+                if(path.startsWith('/zh/')) titleMain.textContent = createGarbled('诶呀，页面不见了');
+                else if(path.startsWith('/en/')) titleMain.textContent = createGarbled('Oops, page not found');
+                else titleMain.textContent = createGarbled('404 Not Found');
+                setTimeout(() => {
+                    if(path.startsWith('/zh/')) animateText(titleMain, '诶呀，页面不见了');
+                    else if(path.startsWith('/en/')) animateText(titleMain, 'Oops, page not found');
+                    else animateText(titleMain, '404 Not Found');
+                },120);
+            });
+            
+        </script>
+
+    </body>
+</html>
