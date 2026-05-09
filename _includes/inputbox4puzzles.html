@@ -1,0 +1,92 @@
+<style>
+    .val-group {
+        display: inline-flex;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: none;
+    }
+    .val-group input {
+        font-family: 'Courier New', monospace;
+        font-size: 1rem;
+        padding: 0.7rem 1.2rem;
+        border: 1px solid #CCC;
+        background: #FFF;
+        box-shadow: inset 0 1px 1px rgba(0,0,0,0.07);
+        outline: none;
+        border-radius: 12px 0 0 12px;
+        border-right-width: 0;
+    }
+    .val-group input:focus {
+        border-color: #9F3;
+    }
+    .val-group button {
+        font-family: 'Courier New', monospace;
+        font-size: 1rem;
+        font-weight: 600;
+        padding: 0.7rem 1.5rem;
+        color: #FFF;
+        background: #9F3;
+        border: 1px solid #CCC;
+        box-shadow: inset 0 1px 1px rgba(0,0,0,0.07);
+        border-radius: 0 12px 12px 0;
+        cursor: pointer;
+        transition: background 0.2;
+    }
+    .val-group button:hover {
+        background: #6C3;
+    }
+</style>
+
+{% assign id = include.id | default: "validator" %}
+{% assign placeholder = include.placeholder | default: "Enter answer" %}
+{% assign data_file = include.data-file %}
+{% assign level = include.level | plus: 0 %}
+{% assign oops_url = "/puzzle/oops/" %}
+{% assign redirect_url = include.redirect %}
+
+<div class="val-group">
+    <input type="text" id="inp-{{ id }}" placeholder="{{ placeholder }}">
+    <button type="button">Submit</button>
+</div>
+
+<script>
+(function(){
+    var inp = document.getElementById('inp-{{ id }}');
+    var btn = inp.nextElementSibling;
+    var dataFile = {{ data_file | jsonify }};
+    var targetLevel = {{ level | jsonify }};
+    var oopsUrl = {{ oops_url | jsonify }};
+    var redirectUrl = {{ redirect_url | jsonify }};
+    var expectedAnswer = null;
+    
+    fetch(dataFile)
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data.puzzles) {
+                for (var i = 0; i < data.puzzles.length; i++) {
+                    if (data.puzzles[i].level == targetLevel) {
+                        expectedAnswer = data.puzzles[i].answer.toLowerCase();
+                        break;
+                    }
+                }
+            }
+        })
+        .catch(function(err) { console.warn(err); });
+    
+    function check(){
+        var val = inp.value.trim();
+        if (!val) {
+            location.href = oopsUrl;
+            return;
+        }
+        if (expectedAnswer && val.toLowerCase() === expectedAnswer) {
+            location.href = redirectUrl;
+        } else {
+            location.href = oopsUrl;
+        }
+    }
+    
+    btn.onclick = check;
+    inp.onkeypress = function(e){ if(e.key === 'Enter') check(); };
+})();
+</script>
