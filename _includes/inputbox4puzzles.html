@@ -39,10 +39,9 @@
 
 {% assign id = include.id | default: "validator" %}
 {% assign placeholder = include.placeholder | default: "Enter answer" %}
-{% assign data_file = include.data-file %}
-{% assign level = include.level | plus: 0 %}
-{% assign oops_url = "/puzzle/oops/" %}
+{% assign pattern_raw = include.pattern %}
 {% assign redirect_url = include.redirect %}
+{% assign oops_url = "/puzzle/oops/" %}
 
 <div class="val-group">
     <input type="text" id="inp-{{ id }}" placeholder="{{ placeholder }}">
@@ -53,25 +52,10 @@
 (function(){
     var inp = document.getElementById('inp-{{ id }}');
     var btn = inp.nextElementSibling;
-    var dataFile = {{ data_file | jsonify }};
-    var targetLevel = {{ level | jsonify }};
-    var oopsUrl = {{ oops_url | jsonify }};
+    var patternRaw = {{ pattern_raw | jsonify }};
     var redirectUrl = {{ redirect_url | jsonify }};
-    var expectedAnswer = null;
-    
-    fetch(dataFile)
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
-            if (data.puzzles) {
-                for (var i = 0; i < data.puzzles.length; i++) {
-                    if (data.puzzles[i].level == targetLevel) {
-                        expectedAnswer = data.puzzles[i].answer.toLowerCase();
-                        break;
-                    }
-                }
-            }
-        })
-        .catch(function(err) { console.warn(err); });
+    var oopsUrl = {{ oops_url | jsonify }};
+    var expected = typeof patternRaw === 'string' ? patternRaw.toLowerCase() : patternRaw;
     
     function check(){
         var val = inp.value.trim();
@@ -79,7 +63,7 @@
             location.href = oopsUrl;
             return;
         }
-        if (expectedAnswer && val.toLowerCase() === expectedAnswer) {
+        if (val.toLowerCase() === expected) {
             location.href = redirectUrl;
         } else {
             location.href = oopsUrl;
